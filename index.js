@@ -181,11 +181,15 @@ DiskStore.prototype.set = function (key, val, options, cb) {
   // get ttl
   var ttl = (options && (options.ttl || options.ttl === 0)) ? options.ttl : this.options.ttl;
 
+  function randomString() {
+    if (this.options.reuseCache === true) return ''
+    else return uuid.v4()
+  }
   var metaData = extend({}, new MetaData(), {
   	key: key,
   	value: val,
   	expires: Date.now() + ((ttl || 60) * 1000),
-  	filename: this.options.path + '/cache_' + uuid.v4() + '.dat'
+  	filename: this.options.path + '/cache_' + randomString() + '.dat'
   });
 
   var stream = JSON.stringify(metaData);
